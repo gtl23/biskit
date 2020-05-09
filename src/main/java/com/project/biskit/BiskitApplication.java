@@ -17,7 +17,7 @@ public class BiskitApplication {
 	}
 
 	@Bean
-	public Docket truecallerApi() {
+	public Docket biskitApi() {
 		return new Docket(DocumentationType.SWAGGER_2).select()
 				.apis(RequestHandlerSelectors.basePackage("com.project.biskit")).build();
 	}
