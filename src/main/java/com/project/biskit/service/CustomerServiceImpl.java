@@ -58,7 +58,7 @@ public class CustomerServiceImpl implements CustomerService {
         Items itemDetail = item.orElseThrow(() -> new NotFoundException(ResponseMessages.NO_ITEMS_FOUND));
 
         return new ResponseEntity<>(new Items(itemDetail.getId(),
-                itemDetail.getName(), itemDetail.getItemPrice()), HttpStatus.OK);
+                itemDetail.getName(), itemDetail.getItemPrice(), itemDetail.getStockCount()), HttpStatus.OK);
     }
 
     @Override
