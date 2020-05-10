@@ -4,6 +4,7 @@ import com.project.biskit.entity.Items;
 import com.project.biskit.entity.OrderItems;
 import com.project.biskit.entity.Orders;
 import com.project.biskit.exceptions.BadRequestException;
+import com.project.biskit.exceptions.ConflictException;
 import com.project.biskit.exceptions.NotFoundException;
 import com.project.biskit.model.AllItemsResponse;
 import com.project.biskit.model.PlaceOrderRequest;
@@ -61,7 +62,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public ResponseEntity<?> placeOrder(CustomUserDetail userDetail, List<PlaceOrderRequest> orderRequestList) throws BadRequestException {
+    public ResponseEntity<?> placeOrder(CustomUserDetail userDetail, List<PlaceOrderRequest> orderRequestList) throws BadRequestException, ConflictException {
 
         if (Objects.isNull(orderRequestList) || orderRequestList.isEmpty())
             throw new BadRequestException(ResponseMessages.INVALID_ORDER_REQUEST);
@@ -73,9 +74,9 @@ public class CustomerServiceImpl implements CustomerService {
             itemIds.add(requestList.getItemId());
         });
 
-        List<StockCountProjection> stockCountList = itemRepository.getStockCount(itemIds);
+        List<Items> stockCountList = itemRepository.getStockCount(itemIds);
         Map<Long, Items> stockCount = new HashMap<>();
-        stockCountList.forEach(stock -> stockCount.put(stock.getId(), new Items(stock.getItemPrice(), stock.getStockCount())));
+        stockCountList.forEach(stock -> stockCount.put(stock.getId(), stock));
 
         if (inStock(requestItemsCount, stockCount)) {
             Orders order = new Orders();
@@ -91,9 +92,23 @@ public class CustomerServiceImpl implements CustomerService {
                     Status.PROCESSING)));
 
             orderItemsRepository.saveAll(orderItems);
-        }
+
+            updateStockCount(orderRequestList, stockCount);
+        } else throw new ConflictException(ResponseMessages.OUT_OF_STOCK);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    private void updateStockCount(List<PlaceOrderRequest> orderRequestList, Map<Long, Items> stockCount) {
+
+        List<Items> updatedItems = new ArrayList<>();
+        orderRequestList.forEach(order -> {
+            Items items = stockCount.get(order.getItemId());
+            items.setStockCount(items.getStockCount() - order.getCount());
+            updatedItems.add(items);
+        });
+
+        itemRepository.saveAll(updatedItems);
     }
 
     private boolean inStock(Map<Long, Long> requestItemsCount, Map<Long, Items> stockCount) {

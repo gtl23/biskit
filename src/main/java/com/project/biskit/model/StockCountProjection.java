@@ -8,4 +8,6 @@ public interface StockCountProjection {
 
     Double getItemPrice();
 
+    String getName();
+
 }

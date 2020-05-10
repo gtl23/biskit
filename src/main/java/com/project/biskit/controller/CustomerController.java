@@ -1,6 +1,7 @@
 package com.project.biskit.controller;
 
 import com.project.biskit.exceptions.BadRequestException;
+import com.project.biskit.exceptions.ConflictException;
 import com.project.biskit.exceptions.NotFoundException;
 import com.project.biskit.model.PlaceOrderRequest;
 import com.project.biskit.security.CustomUserDetail;
@@ -32,7 +33,8 @@ public class CustomerController {
 
     @PostMapping("/order")
     public ResponseEntity<?> placeOrder(@AuthenticationPrincipal CustomUserDetail userDetail,
-                                        @RequestBody List<PlaceOrderRequest> orderRequestList) throws BadRequestException {
+                                        @RequestBody List<PlaceOrderRequest> orderRequestList)
+            throws BadRequestException, ConflictException {
         return customerService.placeOrder(userDetail, orderRequestList);
     }
 

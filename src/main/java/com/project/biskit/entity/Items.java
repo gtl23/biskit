@@ -78,5 +78,10 @@ public class Items {
         this.stockCount = stockCount;
     }
 
+    public Items(Long id, Long stockCount) {
+        this.id = id;
+        this.stockCount = stockCount;
+    }
+
     public Items() {}
 }

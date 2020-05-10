@@ -1,6 +1,7 @@
 package com.project.biskit.service;
 
 import com.project.biskit.exceptions.BadRequestException;
+import com.project.biskit.exceptions.ConflictException;
 import com.project.biskit.exceptions.NotFoundException;
 import com.project.biskit.model.PlaceOrderRequest;
 import com.project.biskit.security.CustomUserDetail;
@@ -13,5 +14,5 @@ public interface CustomerService {
 
     ResponseEntity<?> getItemDetails(Long itemId) throws NotFoundException;
 
-    ResponseEntity<?> placeOrder(CustomUserDetail userDetail, List<PlaceOrderRequest> orderRequestList) throws BadRequestException;
+    ResponseEntity<?> placeOrder(CustomUserDetail userDetail, List<PlaceOrderRequest> orderRequestList) throws BadRequestException, ConflictException;
 }
