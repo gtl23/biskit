@@ -53,4 +53,9 @@ public class CustomerController {
         return customerService.getAllOrders(userDetail, pageNo, pageSize);
     }
 
+    @GetMapping("/order/{id}")
+    public ResponseEntity<?> getOrderDetails(@PathVariable Long id) throws NotFoundException, ConflictException {
+        return customerService.getOrderDetails(id);
+    }
+
 }

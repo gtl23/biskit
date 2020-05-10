@@ -7,6 +7,7 @@ import com.project.biskit.exceptions.BadRequestException;
 import com.project.biskit.exceptions.ConflictException;
 import com.project.biskit.exceptions.NotFoundException;
 import com.project.biskit.model.AllItemsResponse;
+import com.project.biskit.model.OrderDetailResponse;
 import com.project.biskit.model.PlaceOrderRequest;
 import com.project.biskit.repository.ItemRepository;
 import com.project.biskit.repository.OrderItemsRepository;
@@ -154,6 +155,18 @@ public class CustomerServiceImpl implements CustomerService {
             throw new NotFoundException(ResponseMessages.NO_ORDERS);
 
         return new ResponseEntity<>(new AllItemsResponse(orders.getTotalElements(), orders.getContent()), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<?> getOrderDetails(Long id) throws NotFoundException, ConflictException {
+        Optional<Orders> order = orderRepository.findById(id);
+        Orders existingOrder = order.orElseThrow(() -> new NotFoundException(ResponseMessages.NO_SUCH_ORDER));
+
+        List<OrderItems> orderItems = orderItemsRepository.findByOrderId(id);
+        if (Objects.isNull(orderItems) || orderItems.isEmpty())
+            throw new ConflictException(ResponseMessages.INVALID_ORDER);
+
+        return new ResponseEntity<>(new OrderDetailResponse(existingOrder, orderItems), HttpStatus.OK);
     }
 
     private void updateStockAfterCancellation(Long itemId, Long count) {
