@@ -54,10 +54,23 @@ public class Items {
         this.stockCount = stockCount;
     }
 
+    public Items(Long id, String name, Double itemPrice, Long stockCount) {
+        this.id = id;
+        this.name = name;
+        this.itemPrice = itemPrice;
+        this.stockCount = stockCount;
+    }
+
     public Items(String name, Double itemPrice, Long stockCount) {
         this.name = name;
         this.itemPrice = itemPrice;
         this.stockCount = stockCount;
+    }
+
+    public Items(Long id, String name, Double itemPrice) {
+        this.id = id;
+        this.name = name;
+        this.itemPrice = itemPrice;
     }
 
     public Items() {}

@@ -12,5 +12,6 @@ public class ResponseMessages {
     public static final String INVALID_SIGN_UP_REQUEST = "Email, name and password are mandatory for signing up!";
     public static final String ACCOUNT_ALREADY_EXISTS = "An account already exists with this email!";
     public static final String INVALID_LOGIN_REQUEST = "Invalid credentials or account doesn't exists.";
+    public static final String INVALID_ORDER_REQUEST = "No items provided for placing order!";
 
 }

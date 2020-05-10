@@ -2,9 +2,11 @@ package com.project.biskit.entity;
 
 import com.project.biskit.utils.Status;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
 @Entity
 public class Orders {
@@ -16,9 +18,20 @@ public class Orders {
     @NotNull
     private Long userId;
 
+    @CreationTimestamp
+    private LocalDateTime createdDate;
+
     @NotNull
     @Enumerated(EnumType.STRING)
     private Status orderStatus;
+
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(LocalDateTime createdDate) {
+        this.createdDate = createdDate;
+    }
 
     public Long getId() {
         return id;

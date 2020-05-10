@@ -6,6 +6,7 @@ import com.project.biskit.exceptions.BadRequestException;
 import com.project.biskit.exceptions.ConflictException;
 import com.project.biskit.exceptions.NotFoundException;
 import com.project.biskit.model.AddItemRequest;
+import com.project.biskit.model.AllItemsResponse;
 import com.project.biskit.repository.ItemRepository;
 import com.project.biskit.repository.OrderItemsRepository;
 import com.project.biskit.utils.ResponseMessages;
@@ -82,7 +83,10 @@ public class ItemServiceImpl implements ItemService {
         if (allItems.isEmpty())
             throw new NotFoundException(ResponseMessages.STORE_EMPTY);
 
-        return new ResponseEntity<>(allItems.getContent(), HttpStatus.OK);
+        List<Items> itemsList = allItems.getContent().stream().map(items ->
+                new Items(items.getId(), items.getName(), items.getItemPrice(), items.getStockCount())).collect(Collectors.toList());
+
+        return new ResponseEntity<>(new AllItemsResponse(itemsList, allItems.getTotalElements()), HttpStatus.OK);
     }
 
     @Override

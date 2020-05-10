@@ -1,9 +1,11 @@
 package com.project.biskit.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.project.biskit.entity.Items;
 import java.util.List;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AllItemsResponse {
 
     @JsonProperty("all_items")
