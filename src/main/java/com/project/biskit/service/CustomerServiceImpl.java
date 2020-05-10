@@ -14,6 +14,7 @@ import com.project.biskit.repository.OrderRepository;
 import com.project.biskit.security.CustomUserDetail;
 import com.project.biskit.utils.ResponseMessages;
 import com.project.biskit.utils.Status;
+import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -116,6 +117,43 @@ public class CustomerServiceImpl implements CustomerService {
         updateStockAfterCancellation(orderItems);
 
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<?> cancelItem(Long orderItemId) throws NotFoundException, BadRequestException {
+        Optional<OrderItems> orderItems = orderItemsRepository.findById(orderItemId);
+        OrderItems existingOrderItem = orderItems.orElseThrow(()
+                -> new NotFoundException(ResponseMessages.NO_ORDER_ITEM_FOUND));
+
+        if (existingOrderItem.getItemStatus().equals(Status.CANCELLED))
+            throw new BadRequestException(ResponseMessages.ITEM_ALREADY_CANCELLED);
+
+        existingOrderItem.setItemStatus(Status.CANCELLED);
+
+        List<OrderItems> orderItemsList = orderItemsRepository.
+                findRemainingOrderItems(existingOrderItem.getOrderId(), orderItemId);
+
+        if (!(Objects.nonNull(orderItemsList) && !orderItemsList.isEmpty())){
+            Optional<Orders> orders = orderRepository.findById(existingOrderItem.getOrderId());
+            if (orders.isPresent()){
+                Orders order = orders.get();
+                order.setOrderStatus(Status.CANCELLED);
+                orderRepository.save(order);
+            }
+        }
+        orderItemsRepository.save(existingOrderItem);
+        updateStockAfterCancellation(existingOrderItem.getItemId(), existingOrderItem.getCount());
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    private void updateStockAfterCancellation(Long itemId, Long count) {
+        Optional<Items> items = itemRepository.findById(itemId);
+        if (items.isPresent()){
+            Items stockItem = items.get();
+            stockItem.setStockCount(stockItem.getStockCount() + count);
+            itemRepository.save(stockItem);
+        }
     }
 
     private void updateStockAfterCancellation(List<OrderItems> orderItems) {

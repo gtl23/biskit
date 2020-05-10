@@ -16,5 +16,7 @@ public class ResponseMessages {
     public static final String OUT_OF_STOCK = "Insufficient items in stock to process your order, sorry!";
     public static final String NO_SUCH_ORDER = "No such order exists.";
     public static final String ORDER_ALREADY_CANCELLED = "Order is already cancelled!";
+    public static final String ITEM_ALREADY_CANCELLED = "Item is already cancelled!";
+    public static final String NO_ORDER_ITEM_FOUND = "No order items were found for this order!";
 
 }

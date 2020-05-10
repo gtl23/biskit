@@ -18,4 +18,6 @@ public interface CustomerService {
             throws BadRequestException, ConflictException;
 
     ResponseEntity<?> cancelOrder(Long orderId) throws NotFoundException, BadRequestException;
+
+    ResponseEntity<?> cancelItem(Long orderItemId) throws NotFoundException, BadRequestException;
 }

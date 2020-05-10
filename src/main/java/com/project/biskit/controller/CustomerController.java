@@ -43,4 +43,9 @@ public class CustomerController {
         return customerService.cancelOrder(orderId);
     }
 
+    @PutMapping("/cancel/item/{orderItemId}")
+    public ResponseEntity<?> cancelItem(@PathVariable Long orderItemId) throws NotFoundException, BadRequestException {
+        return customerService.cancelItem(orderItemId);
+    }
+
 }
