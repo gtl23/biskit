@@ -62,7 +62,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public ResponseEntity<?> placeOrder(CustomUserDetail userDetail, List<PlaceOrderRequest> orderRequestList) throws BadRequestException, ConflictException {
+    public synchronized ResponseEntity<?> placeOrder(CustomUserDetail userDetail, List<PlaceOrderRequest> orderRequestList) throws BadRequestException, ConflictException {
 
         if (Objects.isNull(orderRequestList) || orderRequestList.isEmpty())
             throw new BadRequestException(ResponseMessages.INVALID_ORDER_REQUEST);
@@ -100,7 +100,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public ResponseEntity<?> cancelOrder(Long orderId) throws NotFoundException, BadRequestException {
+    public synchronized ResponseEntity<?> cancelOrder(Long orderId) throws NotFoundException, BadRequestException {
         Optional<Orders> order = orderRepository.findById(orderId);
         Orders existingOrder = order.orElseThrow(() -> new NotFoundException(ResponseMessages.NO_SUCH_ORDER));
 
@@ -120,7 +120,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public ResponseEntity<?> cancelItem(Long orderItemId) throws NotFoundException, BadRequestException {
+    public synchronized ResponseEntity<?> cancelItem(Long orderItemId) throws NotFoundException, BadRequestException {
         Optional<OrderItems> orderItems = orderItemsRepository.findById(orderItemId);
         OrderItems existingOrderItem = orderItems.orElseThrow(()
                 -> new NotFoundException(ResponseMessages.NO_ORDER_ITEM_FOUND));

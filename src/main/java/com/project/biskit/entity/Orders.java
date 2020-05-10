@@ -1,5 +1,6 @@
 package com.project.biskit.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.project.biskit.utils.Status;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
@@ -14,19 +15,24 @@ public class Orders {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty("id")
     private Long id;
 
     @NotNull
+    @JsonProperty("user_id")
     private Long userId;
 
     @CreationTimestamp
+    @JsonProperty("created_date")
     private LocalDateTime createdDate;
 
     @UpdateTimestamp
+    @JsonProperty("updated_date")
     private LocalDateTime updatedDate;
 
     @NotNull
     @Enumerated(EnumType.STRING)
+    @JsonProperty("order_status")
     private Status orderStatus;
 
     public LocalDateTime getCreatedDate() {

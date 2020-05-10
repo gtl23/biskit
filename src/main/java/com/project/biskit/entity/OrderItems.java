@@ -1,5 +1,6 @@
 package com.project.biskit.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.project.biskit.utils.Status;
 import org.hibernate.annotations.ColumnDefault;
 
@@ -11,16 +12,21 @@ public class OrderItems {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty("id")
     private Long id;
 
     @NotNull
+    @JsonProperty("order_id")
     private Long orderId;
 
     @NotNull
+    @JsonProperty("item_id")
     private Long itemId;
 
+    @JsonProperty("count")
     private Long count;
 
+    @JsonProperty("amount")
     private Double amount;
 
     @NotNull

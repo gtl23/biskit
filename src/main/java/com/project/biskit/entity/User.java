@@ -1,5 +1,6 @@
 package com.project.biskit.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.project.biskit.utils.Roles;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.CreatedDate;
@@ -12,23 +13,32 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty("id")
     private Long id;
 
+    @JsonProperty("name")
     private String name;
 
+    @JsonProperty("email")
     private String email;
 
+    @JsonProperty("phone")
     private String phone;
 
+    @JsonProperty("password")
     private String password;
 
     @CreationTimestamp
+    @JsonProperty("created_date")
     private LocalDateTime createdDate;
 
+    @JsonProperty("address")
     private String address;
 
+    @JsonProperty("zip")
     private String zip;
 
+    @JsonProperty("roles")
     @Enumerated(EnumType.STRING)
     private Roles roles;
 
