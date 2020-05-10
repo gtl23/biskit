@@ -20,7 +20,7 @@ The database has mainly 4 tables :
 3) orders
 4) order_items
 
-**Admin** can only access _/admin_ end points where he/she can perform
+**ADMIN** can only access _/admin_ end points where he/she can perform
 CRUD operations on the items in the store.
 **CUSTOMER** can only access _/customer_ end points where he/she can
 view the items in the store, create single or bulk order, view their
