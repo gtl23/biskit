@@ -20,4 +20,6 @@ public interface CustomerService {
     ResponseEntity<?> cancelOrder(Long orderId) throws NotFoundException, BadRequestException;
 
     ResponseEntity<?> cancelItem(Long orderItemId) throws NotFoundException, BadRequestException;
+
+    ResponseEntity<?> getAllOrders(CustomUserDetail userDetail, int pageNo, int pageSize) throws NotFoundException;
 }

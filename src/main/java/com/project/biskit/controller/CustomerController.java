@@ -6,7 +6,6 @@ import com.project.biskit.exceptions.NotFoundException;
 import com.project.biskit.model.PlaceOrderRequest;
 import com.project.biskit.security.CustomUserDetail;
 import com.project.biskit.service.CustomerService;
-import com.project.biskit.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -46,6 +45,12 @@ public class CustomerController {
     @PutMapping("/cancel/item/{orderItemId}")
     public ResponseEntity<?> cancelItem(@PathVariable Long orderItemId) throws NotFoundException, BadRequestException {
         return customerService.cancelItem(orderItemId);
+    }
+
+    @GetMapping("/order/all")
+    public ResponseEntity<?> getAllOrders(@AuthenticationPrincipal CustomUserDetail userDetail,
+                                          @RequestParam int pageNo, @RequestParam int pageSize) throws NotFoundException {
+        return customerService.getAllOrders(userDetail, pageNo, pageSize);
     }
 
 }

@@ -14,7 +14,6 @@ import com.project.biskit.repository.OrderRepository;
 import com.project.biskit.security.CustomUserDetail;
 import com.project.biskit.utils.ResponseMessages;
 import com.project.biskit.utils.Status;
-import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -145,6 +144,16 @@ public class CustomerServiceImpl implements CustomerService {
         updateStockAfterCancellation(existingOrderItem.getItemId(), existingOrderItem.getCount());
 
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<?> getAllOrders(CustomUserDetail userDetail, int pageNo, int pageSize) throws NotFoundException {
+        Page<Orders> orders = orderRepository.findByUserId(userDetail.getId(), PageRequest.of(pageNo - 1, pageSize));
+
+        if (Objects.isNull(orders) || orders.isEmpty())
+            throw new NotFoundException(ResponseMessages.NO_ORDERS);
+
+        return new ResponseEntity<>(new AllItemsResponse(orders.getTotalElements(), orders.getContent()), HttpStatus.OK);
     }
 
     private void updateStockAfterCancellation(Long itemId, Long count) {

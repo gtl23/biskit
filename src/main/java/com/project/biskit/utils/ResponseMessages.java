@@ -18,5 +18,6 @@ public class ResponseMessages {
     public static final String ORDER_ALREADY_CANCELLED = "Order is already cancelled!";
     public static final String ITEM_ALREADY_CANCELLED = "Item is already cancelled!";
     public static final String NO_ORDER_ITEM_FOUND = "No order items were found for this order!";
+    public static final String NO_ORDERS = "You don't have any order placed!";
 
 }
