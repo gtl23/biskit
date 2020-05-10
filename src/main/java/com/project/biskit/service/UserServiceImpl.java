@@ -20,6 +20,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import java.util.Objects;
 
 @Service
@@ -47,13 +48,11 @@ public class UserServiceImpl implements UserService {
                     new UsernamePasswordAuthenticationToken(request.getEmail(),
                             request.getPassword())
             );
-        }catch (BadCredentialsException e){
+        } catch (BadCredentialsException e) {
             throw new BadRequestException(ResponseMessages.INVALID_LOGIN_REQUEST);
         }
 
-        final UserDetails userDetails = userDetailService.loadUserByUsername(request.getEmail());
-
-        final String jwt = jwtUtil.generateToken(userDetails);
+        final String jwt = generateJwt(request.getEmail());
 
         return ResponseEntity.ok(new AuthenticationResponse(jwt));
     }
@@ -62,8 +61,8 @@ public class UserServiceImpl implements UserService {
     public ResponseEntity<?> signUp(SignUpRequest signUpRequest) throws BadRequestException, ConflictException {
 
         if (Objects.isNull(signUpRequest.getEmail()) || signUpRequest.getEmail().isEmpty() ||
-        Objects.isNull(signUpRequest.getName()) || signUpRequest.getName().isEmpty() ||
-        Objects.isNull(signUpRequest.getPassword()) || signUpRequest.getPassword().isEmpty())
+                Objects.isNull(signUpRequest.getName()) || signUpRequest.getName().isEmpty() ||
+                Objects.isNull(signUpRequest.getPassword()) || signUpRequest.getPassword().isEmpty())
             throw new BadRequestException(ResponseMessages.INVALID_SIGN_UP_REQUEST);
 
         User user = new User();
@@ -72,10 +71,18 @@ public class UserServiceImpl implements UserService {
 
         try {
             userRepository.save(user);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new ConflictException(ResponseMessages.ACCOUNT_ALREADY_EXISTS);
         }
 
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        final String jwt = generateJwt(signUpRequest.getEmail());
+
+        return new ResponseEntity<>(new AuthenticationResponse(jwt), HttpStatus.CREATED);
+    }
+
+    private String generateJwt(String email) {
+        final UserDetails userDetails = userDetailService.loadUserByUsername(email);
+
+        return jwtUtil.generateToken(userDetails);
     }
 }
