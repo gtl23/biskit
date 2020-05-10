@@ -3,6 +3,7 @@ package com.project.biskit.entity;
 import com.project.biskit.utils.Status;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -20,6 +21,9 @@ public class Orders {
 
     @CreationTimestamp
     private LocalDateTime createdDate;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedDate;
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -55,5 +59,13 @@ public class Orders {
 
     public void setOrderStatus(Status orderStatus) {
         this.orderStatus = orderStatus;
+    }
+
+    public LocalDateTime getUpdatedDate() {
+        return updatedDate;
+    }
+
+    public void setUpdatedDate(LocalDateTime updatedDate) {
+        this.updatedDate = updatedDate;
     }
 }

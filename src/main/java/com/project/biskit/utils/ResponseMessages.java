@@ -14,5 +14,7 @@ public class ResponseMessages {
     public static final String INVALID_LOGIN_REQUEST = "Invalid credentials or account doesn't exists.";
     public static final String INVALID_ORDER_REQUEST = "No items provided for placing order!";
     public static final String OUT_OF_STOCK = "Insufficient items in stock to process your order, sorry!";
+    public static final String NO_SUCH_ORDER = "No such order exists.";
+    public static final String ORDER_ALREADY_CANCELLED = "Order is already cancelled!";
 
 }

@@ -8,7 +8,6 @@ import com.project.biskit.exceptions.ConflictException;
 import com.project.biskit.exceptions.NotFoundException;
 import com.project.biskit.model.AllItemsResponse;
 import com.project.biskit.model.PlaceOrderRequest;
-import com.project.biskit.model.StockCountProjection;
 import com.project.biskit.repository.ItemRepository;
 import com.project.biskit.repository.OrderItemsRepository;
 import com.project.biskit.repository.OrderRepository;
@@ -93,13 +92,46 @@ public class CustomerServiceImpl implements CustomerService {
 
             orderItemsRepository.saveAll(orderItems);
 
-            updateStockCount(orderRequestList, stockCount);
+            updateStock(orderRequestList, stockCount);
         } else throw new ConflictException(ResponseMessages.OUT_OF_STOCK);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    private void updateStockCount(List<PlaceOrderRequest> orderRequestList, Map<Long, Items> stockCount) {
+    @Override
+    public ResponseEntity<?> cancelOrder(Long orderId) throws NotFoundException, BadRequestException {
+        Optional<Orders> order = orderRepository.findById(orderId);
+        Orders existingOrder = order.orElseThrow(() -> new NotFoundException(ResponseMessages.NO_SUCH_ORDER));
+
+        if (existingOrder.getOrderStatus().equals(Status.CANCELLED))
+            throw new BadRequestException(ResponseMessages.ORDER_ALREADY_CANCELLED);
+
+        existingOrder.setOrderStatus(Status.CANCELLED);
+        List<OrderItems> orderItems = orderItemsRepository.findByOrderId(orderId);
+        orderItems.forEach(item -> item.setItemStatus(Status.CANCELLED));
+
+        orderRepository.save(existingOrder);
+        orderItemsRepository.saveAll(orderItems);
+
+        updateStockAfterCancellation(orderItems);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    private void updateStockAfterCancellation(List<OrderItems> orderItems) {
+        List<Long> itemIds = new ArrayList<>();
+        orderItems.forEach(item -> itemIds.add(item.getItemId()));
+
+        Map<Long, Long> itemCount = new HashMap<>();
+        orderItems.forEach(item -> itemCount.put(item.getItemId(), item.getCount()));
+
+        List<Items> itemsList = itemRepository.getStockCount(itemIds);
+        itemsList.forEach(item -> item.setStockCount(item.getStockCount() + itemCount.get(item.getId())));
+
+        itemRepository.saveAll(itemsList);
+    }
+
+    private void updateStock(List<PlaceOrderRequest> orderRequestList, Map<Long, Items> stockCount) {
 
         List<Items> updatedItems = new ArrayList<>();
         orderRequestList.forEach(order -> {

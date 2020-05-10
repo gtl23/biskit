@@ -14,5 +14,8 @@ public interface CustomerService {
 
     ResponseEntity<?> getItemDetails(Long itemId) throws NotFoundException;
 
-    ResponseEntity<?> placeOrder(CustomUserDetail userDetail, List<PlaceOrderRequest> orderRequestList) throws BadRequestException, ConflictException;
+    ResponseEntity<?> placeOrder(CustomUserDetail userDetail, List<PlaceOrderRequest> orderRequestList)
+            throws BadRequestException, ConflictException;
+
+    ResponseEntity<?> cancelOrder(Long orderId) throws NotFoundException, BadRequestException;
 }

@@ -82,4 +82,7 @@ public class OrderItems {
         this.amount = amount;
         this.itemStatus = itemStatus;
     }
+
+    public OrderItems() {
+    }
 }

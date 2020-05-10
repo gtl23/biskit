@@ -38,4 +38,9 @@ public class CustomerController {
         return customerService.placeOrder(userDetail, orderRequestList);
     }
 
+    @PutMapping("/cancel/{orderId}")
+    public ResponseEntity<?> cancelOrder(@PathVariable Long orderId) throws NotFoundException, BadRequestException {
+        return customerService.cancelOrder(orderId);
+    }
+
 }
