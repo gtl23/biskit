@@ -110,7 +110,7 @@ public class CustomerServiceImpl implements CustomerService {
             throw new BadRequestException(ResponseMessages.ORDER_ALREADY_CANCELLED);
 
         existingOrder.setOrderStatus(Status.CANCELLED);
-        List<OrderItems> orderItems = orderItemsRepository.findByOrderId(orderId);
+        List<OrderItems> orderItems = orderItemsRepository.findItemsToBeCancelled(orderId, String.valueOf(Status.CANCELLED));
         orderItems.forEach(item -> item.setItemStatus(Status.CANCELLED));
 
         orderRepository.save(existingOrder);

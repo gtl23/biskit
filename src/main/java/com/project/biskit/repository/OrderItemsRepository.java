@@ -13,8 +13,6 @@ import java.util.Optional;
 public interface OrderItemsRepository extends JpaRepository<OrderItems, Long> {
     Optional<OrderItems> findOneByItemId(Long id);
 
-    List<OrderItems> findByOrderId(Long orderId);
-
     @Query(nativeQuery = true, value = "SELECT * FROM order_items where order_id = ?1 and id <> ?2 AND item_status <> 'CANCELLED'")
     List<OrderItems> findRemainingOrderItems(Long orderId, Long orderItemId);
 
@@ -32,4 +30,7 @@ public interface OrderItemsRepository extends JpaRepository<OrderItems, Long> {
             " WHERE " +
             " oi.order_id = :id")
     List<OrderDetailProjection> findByOrderItems(Long id);
+
+    @Query(nativeQuery = true, value = "SELECT * FROM  order_items oi where oi.order_id = ?1 and oi.item_status <> ?2")
+    List<OrderItems> findItemsToBeCancelled(Long orderId, String status);
 }
