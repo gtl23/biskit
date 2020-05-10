@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 public class CustomUserDetail implements UserDetails {
 
+    private final Long id;
     private final String name;
     private final String email;
     private final String phone;
@@ -23,6 +24,7 @@ public class CustomUserDetail implements UserDetails {
 
 
     public CustomUserDetail (User user){
+        this.id = user.getId();
         this.name = user.getName();
         this.email = user.getEmail();
         this.phone = user.getPhone();
@@ -38,6 +40,10 @@ public class CustomUserDetail implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getName() {

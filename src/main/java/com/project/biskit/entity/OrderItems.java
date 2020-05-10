@@ -74,4 +74,12 @@ public class OrderItems {
     public void setItemStatus(Status itemStatus) {
         this.itemStatus = itemStatus;
     }
+
+    public OrderItems(@NotNull Long orderId, @NotNull Long itemId, Long count, Double amount, @NotNull Status itemStatus) {
+        this.orderId = orderId;
+        this.itemId = itemId;
+        this.count = count;
+        this.amount = amount;
+        this.itemStatus = itemStatus;
+    }
 }

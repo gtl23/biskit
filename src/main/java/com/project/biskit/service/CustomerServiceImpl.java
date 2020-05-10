@@ -1,15 +1,19 @@
 package com.project.biskit.service;
 
 import com.project.biskit.entity.Items;
+import com.project.biskit.entity.OrderItems;
+import com.project.biskit.entity.Orders;
 import com.project.biskit.exceptions.BadRequestException;
 import com.project.biskit.exceptions.NotFoundException;
 import com.project.biskit.model.AllItemsResponse;
 import com.project.biskit.model.PlaceOrderRequest;
+import com.project.biskit.model.StockCountProjection;
 import com.project.biskit.repository.ItemRepository;
 import com.project.biskit.repository.OrderItemsRepository;
 import com.project.biskit.repository.OrderRepository;
 import com.project.biskit.security.CustomUserDetail;
 import com.project.biskit.utils.ResponseMessages;
+import com.project.biskit.utils.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,7 +25,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class CustomerServiceImpl implements CustomerService{
+public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
     ItemRepository itemRepository;
@@ -69,9 +73,32 @@ public class CustomerServiceImpl implements CustomerService{
             itemIds.add(requestList.getItemId());
         });
 
+        List<StockCountProjection> stockCountList = itemRepository.getStockCount(itemIds);
+        Map<Long, Items> stockCount = new HashMap<>();
+        stockCountList.forEach(stock -> stockCount.put(stock.getId(), new Items(stock.getItemPrice(), stock.getStockCount())));
 
+        if (inStock(requestItemsCount, stockCount)) {
+            Orders order = new Orders();
+            order.setUserId(userDetail.getId());
+            order.setOrderStatus(Status.PROCESSING);
 
+            Long orderId = orderRepository.save(order).getId();
 
-        return null;
+            List<OrderItems> orderItems = new ArrayList<>();
+
+            orderRequestList.forEach(item -> orderItems.add(new OrderItems(orderId, item.getItemId(),
+                    item.getCount(), item.getCount() * stockCount.get(item.getItemId()).getItemPrice(),
+                    Status.PROCESSING)));
+
+            orderItemsRepository.saveAll(orderItems);
+        }
+
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    private boolean inStock(Map<Long, Long> requestItemsCount, Map<Long, Items> stockCount) {
+        if (requestItemsCount.size() != stockCount.size())
+            return false;
+        return requestItemsCount.keySet().stream().noneMatch(itemId -> requestItemsCount.get(itemId) > stockCount.get(itemId).getStockCount());
     }
 }

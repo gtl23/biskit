@@ -73,5 +73,10 @@ public class Items {
         this.itemPrice = itemPrice;
     }
 
+    public Items(Double itemPrice, Long stockCount) {
+        this.itemPrice = itemPrice;
+        this.stockCount = stockCount;
+    }
+
     public Items() {}
 }

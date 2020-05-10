@@ -32,7 +32,7 @@ public class CustomerController {
 
     @PostMapping("/order")
     public ResponseEntity<?> placeOrder(@AuthenticationPrincipal CustomUserDetail userDetail,
-                                        List<PlaceOrderRequest> orderRequestList) throws BadRequestException {
+                                        @RequestBody List<PlaceOrderRequest> orderRequestList) throws BadRequestException {
         return customerService.placeOrder(userDetail, orderRequestList);
     }
 
