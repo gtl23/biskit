@@ -45,5 +45,8 @@ You can also get the post collection of the api's by importing below
 link in postman 
 _https://www.getpostman.com/collections/9305640e2424f5df133e_
 
+**NOTE : ** Make sure to set the database credentials in the 
+_application.properties_ file according to your local credentials.
+
 Please reach out to me on _asperanza23@gmail.com_ if you face any 
 issue in setting up the project or you have any questions.
