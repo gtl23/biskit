@@ -1,16 +1,12 @@
 package com.project.biskit.controller;
 
 import com.project.biskit.exceptions.BadRequestException;
+import com.project.biskit.exceptions.ConflictException;
 import com.project.biskit.model.AuthenticationRequest;
-import com.project.biskit.model.AuthenticationResponse;
-import com.project.biskit.security.CustomUserDetailService;
-import com.project.biskit.security.JwtUtil;
+import com.project.biskit.model.SignUpRequest;
+import com.project.biskit.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,31 +15,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthenticationController {
 
     @Autowired
-    AuthenticationManager authenticationManager;
+    UserService userService;
 
-    @Autowired
-    CustomUserDetailService userDetailService;
-
-    @Autowired
-    JwtUtil jwtUtil;
-
-    @PostMapping("/authenticate")
-    public ResponseEntity<?> createAuthentication(@RequestBody AuthenticationRequest request) throws Exception{
-        try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(request.getEmail(),
-                            request.getPassword())
-            );
-        }catch (BadCredentialsException e){
-            throw new BadRequestException("Invalid credentials or account doesn't exists.");
-        }
-
-        final UserDetails userDetails = userDetailService.loadUserByUsername(request.getEmail());
-
-        final String jwt = jwtUtil.generateToken(userDetails);
-
-        return ResponseEntity.ok(new AuthenticationResponse(jwt));
-
+    @PostMapping("/sign_up")
+    public ResponseEntity<?> signUp(@RequestBody SignUpRequest signUpRequest) throws BadRequestException, ConflictException {
+        return userService.signUp(signUpRequest);
     }
 
+    @PostMapping("/authenticate")
+    public ResponseEntity<?> createAuthentication(@RequestBody AuthenticationRequest request) throws BadRequestException{
+        return userService.authenticateUser(request);
+    }
 }

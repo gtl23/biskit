@@ -1,6 +1,7 @@
 package com.project.biskit.entity;
 
 import com.project.biskit.utils.Roles;
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
@@ -21,7 +22,7 @@ public class User {
 
     private String password;
 
-    @CreatedDate
+    @CreationTimestamp
     private LocalDateTime createdDate;
 
     private String address;

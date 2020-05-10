@@ -1,5 +1,10 @@
 package com.project.biskit.security;
 
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,6 +29,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     @Autowired
     JwtUtil jwtUtil;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(JwtRequestFilter.class);
+
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
@@ -34,14 +41,21 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         String username = null;
         String jwt = null;
 
-        if (Objects.nonNull(authHeader) && authHeader.startsWith("Bearer ")){
+        if (Objects.nonNull(authHeader) && authHeader.startsWith("Bearer ")) {
             jwt = authHeader.substring(7);
-            username = jwtUtil.extractUsername(jwt);
+            try {
+                username = jwtUtil.extractUsername(jwt);
+            } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException e) {
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                (response).sendError(HttpServletResponse.SC_FORBIDDEN, e.getMessage());
+                LOGGER.info("JWT error : {}", e.getMessage());
+                return;
+            }
         }
 
-        if (Objects.nonNull(username) && SecurityContextHolder.getContext().getAuthentication() == null){
+        if (Objects.nonNull(username) && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailService.loadUserByUsername(username);
-            if (jwtUtil.validateToken(jwt, userDetails)){
+            if (jwtUtil.validateToken(jwt, userDetails)) {
                 UsernamePasswordAuthenticationToken uAuthToken =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
