@@ -21,7 +21,7 @@ public class CustomerController {
     CustomerService customerService;
 
     @GetMapping("/all_items")
-    public ResponseEntity<?> getAllItems(@RequestParam int pageNo, @RequestParam int pageSize) throws NotFoundException {
+    public ResponseEntity<?> getAllItems(@RequestParam int pageNo, @RequestParam int pageSize) throws NotFoundException, BadRequestException {
         return customerService.getAllItems(pageNo, pageSize);
     }
 
@@ -49,7 +49,7 @@ public class CustomerController {
 
     @GetMapping("/order/all")
     public ResponseEntity<?> getAllOrders(@AuthenticationPrincipal CustomUserDetail userDetail,
-                                          @RequestParam int pageNo, @RequestParam int pageSize) throws NotFoundException {
+                                          @RequestParam int pageNo, @RequestParam int pageSize) throws NotFoundException, BadRequestException {
         return customerService.getAllOrders(userDetail, pageNo, pageSize);
     }
 

@@ -38,14 +38,17 @@ public class CustomerServiceImpl implements CustomerService {
     OrderItemsRepository orderItemsRepository;
 
     @Override
-    public ResponseEntity<?> getAllItems(int pageNo, int pageSize) throws NotFoundException {
+    public ResponseEntity<?> getAllItems(int pageNo, int pageSize) throws NotFoundException, BadRequestException {
+
+        if (pageNo <= 0 || pageSize < 1)
+            throw new BadRequestException(ResponseMessages.PAGINATION_MESSAGE);
 
         Page<Items> itemsPage = itemRepository.findAll(PageRequest.of(pageNo - 1, pageSize));
         if (itemsPage.isEmpty())
             throw new NotFoundException(ResponseMessages.NO_ITEMS_FOUND);
 
         List<Items> itemsList = itemsPage.getContent().stream().map(items ->
-                new Items(items.getId(), items.getName(), items.getItemPrice())).collect(Collectors.toList());
+                new Items(items.getId(), items.getName(), items.getItemPrice(), items.getStockCount())).collect(Collectors.toList());
 
         return new ResponseEntity<>(new AllItemsResponse(itemsList, itemsPage.getTotalElements()), HttpStatus.OK);
     }
@@ -148,7 +151,10 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public ResponseEntity<?> getAllOrders(CustomUserDetail userDetail, int pageNo, int pageSize) throws NotFoundException {
+    public ResponseEntity<?> getAllOrders(CustomUserDetail userDetail, int pageNo, int pageSize) throws NotFoundException, BadRequestException {
+        if (pageNo <= 0 || pageSize < 1)
+            throw new BadRequestException(ResponseMessages.PAGINATION_MESSAGE);
+
         Page<Orders> orders = orderRepository.findByUserId(userDetail.getId(), PageRequest.of(pageNo - 1, pageSize));
 
         if (Objects.isNull(orders) || orders.isEmpty())

@@ -77,7 +77,11 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ResponseEntity<?> getAllItems(int pageNo, int pageSize) throws NotFoundException {
+    public ResponseEntity<?> getAllItems(int pageNo, int pageSize) throws NotFoundException, BadRequestException {
+
+        if (pageNo <= 0 || pageSize < 1)
+            throw new BadRequestException(ResponseMessages.PAGINATION_MESSAGE);
+
         Page<Items> allItems = itemRepository.findAll(PageRequest.of(pageNo - 1, pageSize));
 
         if (allItems.isEmpty())

@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 public interface CustomerService {
-    ResponseEntity<?> getAllItems(int pageNo, int pageSize) throws NotFoundException;
+    ResponseEntity<?> getAllItems(int pageNo, int pageSize) throws NotFoundException, BadRequestException;
 
     ResponseEntity<?> getItemDetails(Long itemId) throws NotFoundException;
 
@@ -21,7 +21,7 @@ public interface CustomerService {
 
     ResponseEntity<?> cancelItem(Long orderItemId) throws NotFoundException, BadRequestException;
 
-    ResponseEntity<?> getAllOrders(CustomUserDetail userDetail, int pageNo, int pageSize) throws NotFoundException;
+    ResponseEntity<?> getAllOrders(CustomUserDetail userDetail, int pageNo, int pageSize) throws NotFoundException, BadRequestException;
 
     ResponseEntity<?> getOrderDetails(Long id) throws NotFoundException, ConflictException;
 }

@@ -15,7 +15,7 @@ public interface ItemService {
 
     ResponseEntity<?> deleteItem(Long id) throws NotFoundException, ConflictException;
 
-    ResponseEntity<?> getAllItems(int pageNo, int pageSize) throws NotFoundException;
+    ResponseEntity<?> getAllItems(int pageNo, int pageSize) throws NotFoundException, BadRequestException;
 
     ResponseEntity<?> getItemDetails(Long id) throws NotFoundException;
 }

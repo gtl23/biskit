@@ -20,5 +20,6 @@ public class ResponseMessages {
     public static final String NO_ORDER_ITEM_FOUND = "No order items were found for this order!";
     public static final String NO_ORDERS = "You don't have any order placed!";
     public static final String INVALID_ORDER = "This is an invalid order!";
+    public static final String PAGINATION_MESSAGE = "Page index must not be less than zero and page size must not be less than one!";
 
 }

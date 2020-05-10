@@ -35,7 +35,7 @@ public class AdminController {
     }
 
     @GetMapping("/item")
-    public ResponseEntity<?> getAllItems(@RequestParam int pageNo, @RequestParam int pageSize) throws NotFoundException {
+    public ResponseEntity<?> getAllItems(@RequestParam int pageNo, @RequestParam int pageSize) throws NotFoundException, BadRequestException {
         return itemService.getAllItems(pageNo, pageSize);
     }
 
