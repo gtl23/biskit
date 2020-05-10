@@ -31,6 +31,7 @@ public class OrderItems {
 
     @NotNull
     @Enumerated(EnumType.STRING)
+    @JsonProperty("item_status")
     private Status itemStatus;
 
     public Long getId() {

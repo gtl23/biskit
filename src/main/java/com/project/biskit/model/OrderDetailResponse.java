@@ -12,7 +12,7 @@ public class OrderDetailResponse {
     private Orders order;
 
     @JsonProperty("order_items")
-    private List<OrderItems> orderItems;
+    private List<OrderDetailItems> orderItems;
 
     public Orders getOrder() {
         return order;
@@ -22,15 +22,15 @@ public class OrderDetailResponse {
         this.order = order;
     }
 
-    public List<OrderItems> getOrderItems() {
+    public List<OrderDetailItems> getOrderItems() {
         return orderItems;
     }
 
-    public void setOrderItems(List<OrderItems> orderItems) {
+    public void setOrderItems(List<OrderDetailItems> orderItems) {
         this.orderItems = orderItems;
     }
 
-    public OrderDetailResponse(Orders order, List<OrderItems> orderItems) {
+    public OrderDetailResponse(Orders order, List<OrderDetailItems> orderItems) {
         this.order = order;
         this.orderItems = orderItems;
     }

@@ -6,15 +6,14 @@ import com.project.biskit.entity.Orders;
 import com.project.biskit.exceptions.BadRequestException;
 import com.project.biskit.exceptions.ConflictException;
 import com.project.biskit.exceptions.NotFoundException;
-import com.project.biskit.model.AllItemsResponse;
-import com.project.biskit.model.OrderDetailResponse;
-import com.project.biskit.model.PlaceOrderRequest;
+import com.project.biskit.model.*;
 import com.project.biskit.repository.ItemRepository;
 import com.project.biskit.repository.OrderItemsRepository;
 import com.project.biskit.repository.OrderRepository;
 import com.project.biskit.security.CustomUserDetail;
 import com.project.biskit.utils.ResponseMessages;
 import com.project.biskit.utils.Status;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -168,11 +167,20 @@ public class CustomerServiceImpl implements CustomerService {
         Optional<Orders> order = orderRepository.findById(id);
         Orders existingOrder = order.orElseThrow(() -> new NotFoundException(ResponseMessages.NO_SUCH_ORDER));
 
-        List<OrderItems> orderItems = orderItemsRepository.findByOrderId(id);
+        List<OrderDetailProjection> orderItems = orderItemsRepository.findByOrderItems(id);
         if (Objects.isNull(orderItems) || orderItems.isEmpty())
             throw new ConflictException(ResponseMessages.INVALID_ORDER);
 
-        return new ResponseEntity<>(new OrderDetailResponse(existingOrder, orderItems), HttpStatus.OK);
+        List<OrderDetailItems> orderDetailResponses = new ArrayList<>();
+        orderItems.forEach(item -> {
+            OrderDetailItems detailItems = new OrderDetailItems();
+            BeanUtils.copyProperties(item, detailItems);
+
+            orderDetailResponses.add(detailItems);
+        });
+
+
+        return new ResponseEntity<>(new OrderDetailResponse(existingOrder, orderDetailResponses), HttpStatus.OK);
     }
 
     private void updateStockAfterCancellation(Long itemId, Long count) {
