@@ -41,7 +41,7 @@ The project is also integrated with **Swagger** for api documentation
 which can be accessed by hitting 
 _http://localhost:8080/swagger-ui.html_
 from your browser once the project start to run successfully.
-You can also get the post collection of the api's by importing below
+You can also get the postman collection of the api's by importing below
 link in postman 
 _https://www.getpostman.com/collections/9305640e2424f5df133e_
 
